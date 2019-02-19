@@ -402,7 +402,7 @@ Note:
 
   <trigger
   enabled="n"
-  match="^Note\: One or more target names in this campaign|gquest might be slightly scrambled\.$"
+  match="^You will have to level before you can go on another campaign\.$"
   name="camp_item_start"
   script="camp_item_start"
   sequence='100'

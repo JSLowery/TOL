@@ -402,7 +402,7 @@ Note:
 
   <trigger
   enabled="n"
-  match="^You will have to level before you can go on another campaign\.$"
+  match="^You will have to level before you can go on another campaign\.|You can be rewarded for \d+ more kills this level.$"
   name="camp_item_start"
   script="camp_item_start"
   sequence='100'

@@ -734,6 +734,7 @@ function Add_To_Kill_Table(name, line, wildcards)
     kill_info.room_id = currentRoom.roomid
     kill_info.name = last_Enemy
     Add_Kill_Table(kill_info)
+    DebugNote(kill_info)
 end
 
 function check_dead ()
@@ -817,8 +818,8 @@ function clearTable()
     room_num_table2 = {}
 end
 
-function makeTable(room_num, name, bool, isInTable, area, num, roomName)-- stores all names and room numbers into a global table
-    room_num_table[counter] = {room_num, name, bool, isInTable, area, tonumber(num), roomName}
+function makeTable(room_num, name, bool, isInTable, area, num, roomName, rooms_found)-- stores all names and room numbers into a global table
+    room_num_table[counter] = {room_num, name, bool, isInTable, area, tonumber(num), roomName, rooms_found}
     counter = counter + 1
     -- tprint(room_num_table)
     -- print(counter)
@@ -835,7 +836,8 @@ function printTable() -- prints the global table for names and room numbers, use
         ColourNote("Gray", "", "NUM  Mob name                             Dist   RoomId        Area")
         ColourNote("Gray", "", "------------------------------------------------------------------------");
         for i, row in pairs(cp_mobs) do
-            print(string.format("%3d  %-35s  %-3s %-10s (%s) ", i, row.name, row.dist, room_num_table[i][1], row.location))
+            
+            Note(string.format("%3d  %-35s  %-3s %-10s (%s) ", i, row.name, row.dist, room_num_table[i][1], row.location))
         end
         ColourNote("Gray", "", "------------------------------------------------------------------------");
         DebugNote(cp_mobs)
@@ -937,8 +939,10 @@ function buildRoomTable()-- This sends the table to get room_ids
         DebugNote(cp_mobs[i].name)
         DebugNote(i)
         getRoomId(cp_mobs[i].name, i)
+        DebugNote("room_num_table")
         DebugNote(room_num_table)
     end
+    DebugNote("room_num_table")
     DebugNote(room_num_table)
     for i, v in ipairs(room_num_table) do
         if (room_num_table[i][4] == false) then
@@ -980,7 +984,7 @@ function getRoomId(name, tableNum)-- Gets a roomId from campaign
     if #hld == 0 then
         print(loc)
         print('this cp will be weird because of unmapped rooms.. all entries are subject TOL has broken')
-        makeTable(-1, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, false, cp_mobs[tableNum].location, cp_mobs[tableNum].num, '')
+        makeTable(-1, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, false, cp_mobs[tableNum].location, cp_mobs[tableNum].num, '', 0)
         return
     end
     for g, rows in pairs(hld) do
@@ -1082,19 +1086,29 @@ function getRoomIdAreaCP(name, tableNum)
         DebugNote ("check")
         DebugNote(cp_mobs[tableNum].num)
         DebugNote ("///check")
-        makeTable(tonumber(roomNumber), nameHolder, cp_mobs[tableNum].mobdead, true, loc, cp_mobs[tableNum].num)
+        makeTable(tonumber(roomNumber), nameHolder, cp_mobs[tableNum].mobdead, true, loc, cp_mobs[tableNum].num, #test_timeskileed or 0)
         mob_index = 1
     end
     
     if roomNumber == nil then
         DebugNote("here")
-        makeTable(loc, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, false, loc, cp_mobs[tableNum].num)
+        makeTable(loc, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, false, loc, cp_mobs[tableNum].num, #test_timeskileed or 0)
         mob_index = 1
     end
     
     DebugNote("Times killed table")
     DebugNote(test_timeskileed)
+    DebugNote("Length of timeskilled")
+    DebugNote(#test_timeskileed)
     DebugNote("Times killed table === end")
+end
+
+function getLengthOfTimesKileed(test_timeskilleed)
+    if #test_timeskilleed == nil then 
+        return 0
+    else
+        return #test_timeskilleed
+    end
 end
 
 function getRoomIdRoomCP(name, nameHolder, tableNum)-- TODO some bug here where it drops the last 2 things in list
@@ -1141,7 +1155,7 @@ function getRoomIdRoomCP(name, nameHolder, tableNum)-- TODO some bug here where 
         if roomNumber ~= nil and areaName ~= nil then
             DebugNote("mob is  = "..name)
             DebugNote("timeskilled = "..timeskilled)
-            make1(roomNumber, name, cp_mobs[tableNum].mobdead, true, areaName, cp_mobs[tableNum].num)
+            make1(roomNumber, name, cp_mobs[tableNum].mobdead, true, areaName, cp_mobs[tableNum].num, #test_timeskileed or 0)
 
             DebugNote("Times killed table")
             DebugNote(test_timeskileed)
@@ -1178,7 +1192,7 @@ function getRoomIdRoomCP(name, nameHolder, tableNum)-- TODO some bug here where 
         DebugNote("found it in the cp_mobs table 001")
         DebugNote("mob is  = "..cp_mobs[tableNum].name)
         DebugNote("timeskilled = "..timeskilled)
-        make1(roomNumber, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, true, areaName, cp_mobs[tableNum].num)
+        make1(roomNumber, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, true, areaName, cp_mobs[tableNum].num, #test_timeskileed or 0)
         DebugNote('roomNumber '..roomNumber)
         DebugNote('cp_mobs[tableNum].name '.. cp_mobs[tableNum].name)
         DebugNote('area_table[z].areaName '.. areaName)
@@ -1261,7 +1275,7 @@ function getRoomIdRoomCP(name, nameHolder, tableNum)-- TODO some bug here where 
             end
             if not foundone_room_table then
                 table.insert(test_timeskileed, {area_table[z]})
-                make1(roomNumber, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, true, area_table[z].areaName, cp_mobs[tableNum].num)
+                make1(roomNumber, cp_mobs[tableNum].name, cp_mobs[tableNum].mobdead, true, area_table[z].areaName, cp_mobs[tableNum].num, #test_timeskileed or 0)
                 DebugNote('roomNumber '..roomNumber)
                 DebugNote('cp_mobs[tableNum].name '.. cp_mobs[tableNum].name)
                 DebugNote('area_table[z].areaName '.. area_table[z].areaName)
@@ -1285,7 +1299,8 @@ room_not_in_database = {}
 function sortRoomCPByPath()
     local x
     local room = -1
-    dist_tbl = {}
+    dist_tbl1 = {}
+    dist_tbl2 = {}
     dist_correction = {}
     DebugNote('==============================')
     DebugNote(currentRoom.roomid)
@@ -1296,14 +1311,22 @@ function sortRoomCPByPath()
         DebugNote('Depth:')
         DebugNote (dep)
         if dep ~= nil then
-            table.insert(dist_tbl, {i, dep, p[5]})
+            if p[7] == 1 then
+                table.insert(dist_tbl1, {i, dep, p[5]})
+            else
+                table.insert(dist_tbl2, {i, dep, p[5]})
+            end
         else
             DebugNote('printing p')
             DebugNote(p)
             DebugNote('printing cp_mobs')
             DebugNote(cp_mobs[i])
             if (cp_mobs[i].dist ~= nil) then
-                table.insert(dist_tbl, {i, cp_mobs[i].dist, p[5]})
+                if p[7] == 1 then
+                    table.insert(dist_tbl1, {i, cp_mobs[i].dist, p[5]})
+                else
+                    table.insert(dist_tbl2, {i, cp_mobs[i].dist, p[5]})
+                end
                 --DebugNote('i is '..i .. ' p.dist is '.. p.dist.. ' p[5] '.. p[5])
                 DebugNote("room_num_table " .. i .." = " .. cp_mobs[i].dist)
             else
@@ -1317,20 +1340,30 @@ function sortRoomCPByPath()
     local q = {}
     for i, p in ipairs(dist_correction) do
         local stop_correction = 0
-        for q, n in ipairs(dist_tbl) do
+        for q, n in ipairs(dist_tbl2) do
             if (p[3] == n[3] and stop_correction == 0) then
-                table.insert(dist_tbl, {p[1], n[2]})
+                table.insert(dist_tbl2, {p[1], n[2]})
                 stop_correction = 1
             end
         end
         if stop_correction == 0 then
             DebugNote('inserted '.. 501 .. ' from ' .. p[1])
-            table.insert(dist_tbl, {p[1], 501, p[3]})
+            table.insert(dist_tbl2, {p[1], 501, p[3]})
         end
     end
-    DebugNote(dist_tbl)
-    table.sort(dist_tbl, function(a, b) return a[2] < b[2] end)
-    for _, k in ipairs(dist_tbl) do
+    DebugNote(dist_tbl1)
+    DebugNote(dist_tbl2)
+    table.sort(dist_tbl1, function(a, b) return a[2] < b[2] end)
+    for _, k in ipairs(dist_tbl1) do
+        cp_mobs[k[1]].dist = k[2]
+        DebugNote(cp_mobs[k[1]])
+        table.insert(b, cp_mobs[k[1]])
+        table.insert(q, room_num_table[k[1]])
+    end
+
+    table.sort(dist_tbl2, function(a, b) return a[2] < b[2] end)
+    for _, k in ipairs(dist_tbl2) do
+        -- print(cp_mobs_length+ k[1])
         cp_mobs[k[1]].dist = k[2]
         DebugNote(cp_mobs[k[1]])
         table.insert(b, cp_mobs[k[1]])
@@ -1359,7 +1392,7 @@ function gotoNextMob()-- This will goto the next mob, use with tcp
         Note ('Nothing to go to!')
         return
     end
-    if mob_index == nil then
+    if mob_index == nil  or mob_index == '' then
         mob_index = 1
     end
     if room_num_table == nil or #room_num_table < 1 then
@@ -1398,6 +1431,8 @@ function gotoNextMob()-- This will goto the next mob, use with tcp
             return
         end
         --Execute('xmapper1 move ' .. getTable(mob_index + 1))
+        -- print(mob_index)
+
         local num = getTable(mob_index+1)
         if num > 0 then
             BroadcastPlugin(2, "Moving to "..tostring(num))
@@ -1726,6 +1761,11 @@ end -- OnPluginDisable
 
 function OnPluginInstall()
     -- print('cleaning the table')
+    -- check_file = io.open("Tol_log.txt", "r")
+    
+    file = io.open("Tol_log.txt", "w+")
+    print("Clearing Tol_log file.")
+    io.close(file)
     check_area_table()
     Clean_Kill_Table()
     -- Connected? GMCPHandler Enabled? Not initialized yet? Request the GMCP for initialization -Kobus
@@ -1852,13 +1892,63 @@ function collectgarbagenow()
 end
 
 function DebugNote(msg)
+    file = io.open("Tol_log.txt", "a")
+    --Note(type(msg))
+    if type(msg) == 'table' then
+        -- file:write("in if for table\n")
+        -- file:write(type(msg))
+        -- file:write("\n")
+        --Note("in if for table")
+        local function tlog (t, indent, done)
+         -- in case we run it standalone
+      
+            -- file:write("in tlog\n")
+            --Note("in tlog")
+            -- show strings differently to distinguish them from numbers
+            local function show (val)
+                -- file:write("in show")
+                --Note("in show")
+                if type (val) == "string" then
+                  return '"' .. val .. '"'
+                else
+                  return tostring (val)
+                end -- if
+            end -- show
+          -- entry point here
+            --Note("in start of tlog")
+            done = done or {}
+            indent = indent or 0
+            for key, value in pairs (t) do
+                -- print("in for in table script")
+                file:write (string.rep (" ", indent)) -- indent it
+                if type (value) == "table" and not done [value] then
+                  done [value] = true
+                  file:write (show (key), ":")
+                  tlog (value, indent + 2, done)
+                else
+                  file:write (show (key), "=")
+                  file:write (show (value))
+                end
+                file:write("\n")
+            end
+        end
+        --Note("hitting tlog")
+        tlog(msg)    
+    else 
+        if msg == nil then 
+            file:write("nil\n")
+        else
+            file:write(tostring(msg) .. "\n")
+        end
+    end
+    io.close(file)
     if not Debug then return end
     if type(msg) == 'table' then
         tprint(msg)
     else
         Note (msg)
     end
-    
+   
 end
 
 -----------------------------------------------------------

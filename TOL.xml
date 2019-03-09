@@ -402,7 +402,7 @@ Note:
 
   <trigger
   enabled="n"
-  match="^You will have to level before you can go on another campaign\.|You can be rewarded for \d+ more kills this level.$"
+  match="^You have (.+) left to finish this campaign.|You can be rewarded for \d+ more kills this level.$"
   name="camp_item_start"
   script="camp_item_start"
   sequence='100'
@@ -443,7 +443,7 @@ Note:
   <trigger
    enabled="y"
    regexp="y"
-   match="^([\[]\d+[\]])?\s?(?=You)(.*) \[(\d+)\]$"
+   match="^(\*)?([\[]\d+[\]])?\s?(?=You)(.*) \[(\d+)\]$"
    name="mobnamefight"
    keep_evaluating="y"
    script="mob_name"

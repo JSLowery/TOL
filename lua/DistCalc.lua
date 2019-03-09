@@ -320,7 +320,7 @@ function GOTO(roomId)
     end
     wait.make (function()
         for i, p in pairs(path) do
-            DebugNote(string.len(p['dir']))
+            -- DebugNote(string.len(p['dir']))
             if string.len(p['dir']) > 1 then
                 if string.len(speedwalk) > 0 then
                     DebugNote('speedwalk '..speedwalk)

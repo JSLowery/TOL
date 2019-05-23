@@ -29,13 +29,13 @@ tcpo | tcpo <index>
 tqs
       -- Quick Scan
 km
-      -- Sends the kill command for the last mob queued up by aknx
+      -- Sends the kill command for the last mob queued up by tcp
 pt
       -- Prints the table of mobs and room numbers
 pto
       -- Prints the other list of possible room cps
 wm | wm <name>
-      -- Quick where for a mob name or the last mob used with aknx
+      -- Quick where for a mob name or the last mob used with tcp
 cpn <index> | <mob name>
       -- Hunt trick on the given index or mob name
 kcpn
@@ -54,6 +54,8 @@ rq | rq all
 -----------------------------------------------
 -- Other commands
 -----------------------------------------------
+TOL update
+      -- updates the program
 xrt1 <area>
       -- runs to areas
 tkey "<mob>" "<keywords>"
@@ -92,6 +94,7 @@ Note:
   </timers>
 
 <!--  Aliases  -->
+
 <aliases>
   <alias
    enabled="y"
@@ -402,7 +405,7 @@ Note:
 
   <trigger
   enabled="n"
-  match="^You have (.+) left to finish this campaign.|You can be rewarded for \d+ more kills this level.$"
+  match="^(.{3})(?<!You)(.*)$"
   name="camp_item_start"
   script="camp_item_start"
   sequence='100'

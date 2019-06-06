@@ -304,10 +304,13 @@ function check_CPMobs_Table()
     end
     return 1
 end
-
-function camp_item_start()-- get your campaign items
+can_stall = false
+function camp_item_start(name, line, wildcards)-- get your campaign items
+    if can_stall == false then
+        return
+    end
+    can_stall = false
     clearTable()
-    
     EnableTrigger('campaign_item', false)
     EnableTrigger('camp_item_start', 0)
     cp_mobs = {}
@@ -342,6 +345,7 @@ function campaign_item (name, line, wildcards)-- the actual campaign item getter
         Note("error parsing line: ", line)
     else
         table.insert(mobsleft, {name = name, location = location, mobdead = mobdead, mobdead = mobdead, false, num = tonumber(num)})
+        can_stall = true
     end
 end
 
@@ -1877,6 +1881,7 @@ end
 function reset_cp_win()
     BroadcastPlugin(4)
     FirstRun_cp_var = true
+    EnableTrigger('camp_item_start', 0)
 end
 
 function reset_cp_flag()

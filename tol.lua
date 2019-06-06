@@ -1767,9 +1767,9 @@ function OnPluginInstall()
     -- print('cleaning the table')
     -- check_file = io.open("Tol_log.txt", "r")
     
-    file = io.open("Tol_log.txt", "w+")
-    print("Clearing Tol_log file.")
-    io.close(file)
+    -- file = io.open("Tol_log.txt", "w+")
+    -- print("Clearing Tol_log file.")
+    -- io.close(file)
     check_area_table()
     Clean_Kill_Table()
     -- Connected? GMCPHandler Enabled? Not initialized yet? Request the GMCP for initialization -Kobus
@@ -1897,56 +1897,56 @@ function collectgarbagenow()
 end
 
 function DebugNote(msg)
-    file = io.open("Tol_log.txt", "a")
-    --Note(type(msg))
-    if type(msg) == 'table' then
-        -- file:write("in if for table\n")
-        -- file:write(type(msg))
-        -- file:write("\n")
-        --Note("in if for table")
-        local function tlog (t, indent, done)
-         -- in case we run it standalone
+    -- file = io.open("Tol_log.txt", "a")
+    -- --Note(type(msg))
+    -- if type(msg) == 'table' then
+    --     -- file:write("in if for table\n")
+    --     -- file:write(type(msg))
+    --     -- file:write("\n")
+    --     --Note("in if for table")
+    --     local function tlog (t, indent, done)
+    --      -- in case we run it standalone
       
-            -- file:write("in tlog\n")
-            --Note("in tlog")
-            -- show strings differently to distinguish them from numbers
-            local function show (val)
-                -- file:write("in show")
-                --Note("in show")
-                if type (val) == "string" then
-                  return '"' .. val .. '"'
-                else
-                  return tostring (val)
-                end -- if
-            end -- show
-          -- entry point here
-            --Note("in start of tlog")
-            done = done or {}
-            indent = indent or 0
-            for key, value in pairs (t) do
-                -- print("in for in table script")
-                file:write (string.rep (" ", indent)) -- indent it
-                if type (value) == "table" and not done [value] then
-                  done [value] = true
-                  file:write (show (key), ":")
-                  tlog (value, indent + 2, done)
-                else
-                  file:write (show (key), "=")
-                  file:write (show (value))
-                end
-                file:write("\n")
-            end
-        end
-        --Note("hitting tlog")
-        tlog(msg)    
-    else 
-        if msg == nil then 
-            file:write("nil\n")
-        else
-            file:write(tostring(msg) .. "\n")
-        end
-    end
-    io.close(file)
+    --         -- file:write("in tlog\n")
+    --         --Note("in tlog")
+    --         -- show strings differently to distinguish them from numbers
+    --         local function show (val)
+    --             -- file:write("in show")
+    --             --Note("in show")
+    --             if type (val) == "string" then
+    --               return '"' .. val .. '"'
+    --             else
+    --               return tostring (val)
+    --             end -- if
+    --         end -- show
+    --       -- entry point here
+    --         --Note("in start of tlog")
+    --         done = done or {}
+    --         indent = indent or 0
+    --         for key, value in pairs (t) do
+    --             -- print("in for in table script")
+    --             file:write (string.rep (" ", indent)) -- indent it
+    --             if type (value) == "table" and not done [value] then
+    --               done [value] = true
+    --               file:write (show (key), ":")
+    --               tlog (value, indent + 2, done)
+    --             else
+    --               file:write (show (key), "=")
+    --               file:write (show (value))
+    --             end
+    --             file:write("\n")
+    --         end
+    --     end
+    --     --Note("hitting tlog")
+    --     tlog(msg)    
+    -- else 
+    --     if msg == nil then 
+    --         file:write("nil\n")
+    --     else
+    --         file:write(tostring(msg) .. "\n")
+    --     end
+    -- end
+    -- io.close(file)
     if not Debug then return end
     if type(msg) == 'table' then
         tprint(msg)
